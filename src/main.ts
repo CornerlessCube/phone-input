@@ -51,6 +51,9 @@ phoneInput.addEventListener("input", (__e) => {
         }
     }
 
+    phoneData.value = parseIncompletePhoneNumber(phoneInput.value);
+    phoneData.dispatchEvent(new Event("input"))
+
     let rawFrom = 0;
     const valueChars = phoneInput.value.split("")
     let cursorToRaw = 0;
