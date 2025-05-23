@@ -5,15 +5,21 @@ enum EditType {
     Remove
 }
 
-export type FormattedHTMLInputElement = HTMLInputElement & { oldValue: string, rawInputElement: HTMLInputElement };
-export type RawHTMLInputElement = HTMLInputElement & { formattedInputElement: HTMLInputElement };
+export type FormattedHTMLInputElement = HTMLInputElement & { oldValue: string, rawInputElement: RawHTMLInputElement };
+export type RawHTMLInputElement = HTMLInputElement & { formattedInputElement: FormattedHTMLInputElement };
 
-export function loadPhoneInput(__inputElement: HTMLElement | null, __rawInputElement: HTMLElement | null) {
+/**
+ * Creates the input event listeners and necessary custom properties of the provided inputs.
+ * Therefore, after this function is called, the inputs passed in will behave as a formatted input.
+ * @param __inputElement The input element that the user actually sees.
+ * @param __rawInputElement A hidden input element that contains the raw (unformatted) phone number.
+ * @param ignoreTagName Whether to ignore the tag names of the elements passed in. This might be useful if you are using custom elements that inherit from inputs.
+ */
+export function loadPhoneInput(__inputElement: HTMLElement | null, __rawInputElement: HTMLElement | null, ignoreTagName: boolean = false) {
     if(
         !__inputElement ||
         !__rawInputElement ||
-        __inputElement.tagName !== "INPUT" ||
-        __rawInputElement.tagName !== "INPUT"
+        ((__inputElement.tagName !== "INPUT" || __rawInputElement.tagName !== "INPUT") && !ignoreTagName)
     ) {
         console.warn("Could not load phone input. One of the provided elements is null or not an input element");
         return;
@@ -32,8 +38,18 @@ export function loadPhoneInput(__inputElement: HTMLElement | null, __rawInputEle
     inputElement.rawInputElement.addEventListener("input", handleInputFromRaw)
 }
 
-export function unloadPhoneInput(__inputElement: HTMLElement | null) {
-    if(!__inputElement || __inputElement.tagName !== "INPUT") {
+/**
+ * Removes event listeners registered and custom properties written by this package from both the formatted and raw
+ * input fields.
+ * Therefore, after this function is called, no formatting will be done.
+ * @param __inputElement The formatted input element
+ * @param ignoreTagName Whether to ignore the tag names of the elements passed in. This might be useful if you are using custom elements that inherit from inputs.
+ */
+export function unloadPhoneInput(__inputElement: HTMLElement | null, ignoreTagName: boolean = false) {
+    if(
+        !__inputElement ||
+        (__inputElement.tagName !== "INPUT" && !ignoreTagName)
+    ) {
         console.warn("Could not unload phone input. The provided element is null or not an input element");
         return;
     }
@@ -41,6 +57,9 @@ export function unloadPhoneInput(__inputElement: HTMLElement | null) {
     const inputElement = __inputElement as FormattedHTMLInputElement;
     inputElement.removeEventListener("input", handleInputFromFormatted)
     inputElement.rawInputElement.removeEventListener("input", handleInputFromRaw)
+
+    delete (inputElement.rawInputElement as any).formattedInputElement;
+    delete (inputElement as any).rawInputElement;
 }
 
 function handleInputFromRaw(__e: Event) {
