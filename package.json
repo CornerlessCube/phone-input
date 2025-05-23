@@ -1,6 +1,6 @@
 {
   "name": "@cornerless/phone-input",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An as-you-type phone input formatter",
   "author": "CornerlessCube",
   "homepage": "https://github.com/CornerlessCube/phone-input",
