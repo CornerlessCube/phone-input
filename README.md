@@ -1,6 +1,6 @@
 # Live phone number formatter
 
-This is a demo of the live formatter script I wrote. It uses
+This is a utility for formatting phone numbers as you type. It uses 
 `libphonenumber-js` for formatting.
 
 So what does this script do?
@@ -26,4 +26,8 @@ The URL where the project is available will be written to the console.
 > If you want to test this on a mobile device, but run it on a computer,
 > run `npm run dev-shared` instead of `npm run dev`. This will make the
 > demo available on your local network. I do not advise running this on
-> an untrusted network (public networks, coffee shop and the like).
+> an untrusted network (public networks, coffee shop and such).
+
+---
+This project was proudly created by me, CornerlessCube. If you use this utility in
+your project, please consider giving me a star on GitHub.
